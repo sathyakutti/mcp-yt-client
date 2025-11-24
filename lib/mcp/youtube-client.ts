@@ -68,7 +68,7 @@ export class YouTubeMCPClient {
         this.initialize()
           .then(() => resolve())
           .catch(reject);
-      }, 1000);
+      }, 2000); // Wait for server to be ready
     });
   }
 
@@ -163,13 +163,8 @@ export class YouTubeMCPClient {
    * Get YouTube transcript
    */
   async getTranscript(videoUrl: string): Promise<{
-    videoId: string;
     title: string;
-    transcript: Array<{
-      text: string;
-      start: number;
-      duration: number;
-    }>;
+    transcript: string;
   }> {
     const result = await this.sendRequest('tools/call', {
       name: 'get_transcript',
@@ -178,7 +173,8 @@ export class YouTubeMCPClient {
       }
     });
 
-    return result;
+    // Extract structuredContent from MCP response
+    return result.structuredContent || result;
   }
 
   /**
